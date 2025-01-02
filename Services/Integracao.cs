@@ -4,6 +4,7 @@ using DoImportador.Connection;
 using DoImportador.Enum;
 using DoImportador.Model;
 using DoImportador.Utils;
+using Npgsql.Replication;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -174,57 +175,64 @@ namespace DoImportador.Services
         {
             foreach (var d in dataOriginal)
             {
-                EloIntegracao elo = new EloIntegracao
+                string eloInte = d[EloIntegracao].ToString();
+                string[] arrayElo = eloInte.Split(' ');
+                foreach (var eloin in arrayElo)
                 {
-                    eloIntegracao = d[EloIntegracao].ToString(),
-                    Id = int.Parse(d[id].ToString()),
-                    vinculoIntegracao = enumVinculoIntegracao
-                };
-                if (elo.eloIntegracao.Contains("TR"))
-                {
-                    elo.eloIntegracao = elo.eloIntegracao.Replace("TR", "");
-                    elo.integracao = Enum.EnumIntegracao.TRAY;
-                }
-                else if (elo.eloIntegracao.Contains("AM"))
-                {
-                    elo.eloIntegracao = elo.eloIntegracao.Replace("AM", "");
-                    elo.integracao = Enum.EnumIntegracao.AMERICANAS;
-                }
-                else if (elo.eloIntegracao.Contains("NS"))
-                {
-                    elo.eloIntegracao = elo.eloIntegracao.Replace("NS", "");
-                    elo.integracao = Enum.EnumIntegracao.NUVEMSHOP;
-                }
-                else if (elo.eloIntegracao.Contains("SM"))
-                {
-                    elo.eloIntegracao = elo.eloIntegracao.Replace("SM", "");
-                    elo.integracao = Enum.EnumIntegracao.IFOOD;
-                }
-                else if (elo.eloIntegracao.Contains("SF"))
-                {
-                    elo.eloIntegracao = elo.eloIntegracao.Replace("SF", "");
-                    elo.integracao = Enum.EnumIntegracao.SHOPFY;
-                }
-                else if (elo.eloIntegracao.Contains("IF"))
-                {
-                    elo.eloIntegracao = elo.eloIntegracao.Replace("IF", "");
-                    elo.integracao = Enum.EnumIntegracao.IFOOD;
-                }
-                else if (elo.eloIntegracao.Contains("VP"))
-                {
-                    elo.eloIntegracao = elo.eloIntegracao.Replace("VP", "");
-                    elo.integracao = Enum.EnumIntegracao.VIPCOMERCE;
-                }
+                    EloIntegracao elo = new EloIntegracao
+                    {
+                        eloIntegracao = eloin,
+                        Id = int.Parse(d[id].ToString()),
+                        vinculoIntegracao = enumVinculoIntegracao
+                    };
+                    var teste = int.Parse(d[id].ToString());
 
-                if (elo.integracao != 0 && elo.integracao != null) 
-                { 
-                    string query = "INSERT INTO vinculo_integracao (IDVinculo, IDTipoVinculo, IDIntegracao, ExternalID) VALUES (@IDVinculo, @IDTipoVinculo, @IDIntegracao, @ExternalID)";
-                    Hashtable input = new Hashtable();
-                    input.Add("IDVinculo", elo.Id);
-                    input.Add("IDTipoVinculo", elo.vinculoIntegracao);
-                    input.Add("IDIntegracao", elo.integracao);
-                    input.Add("ExternalID", elo.eloIntegracao);
-                    CrudUtils.ExecuteQuery(iConn, input, query);
+                    if (elo.eloIntegracao.Contains("TR"))
+                    {
+                        elo.eloIntegracao = elo.eloIntegracao.Replace("TR", "");
+                        elo.integracao = Enum.EnumIntegracao.TRAY;
+                    }
+                    else if (elo.eloIntegracao.Contains("AM"))
+                    {
+                        elo.eloIntegracao = elo.eloIntegracao.Replace("AM", "");
+                        elo.integracao = Enum.EnumIntegracao.AMERICANAS;
+                    }
+                    else if (elo.eloIntegracao.Contains("NS"))
+                    {
+                        elo.eloIntegracao = elo.eloIntegracao.Replace("NS", "");
+                        elo.integracao = Enum.EnumIntegracao.NUVEMSHOP;
+                    }
+                    else if (elo.eloIntegracao.Contains("SM"))
+                    {
+                        elo.eloIntegracao = elo.eloIntegracao.Replace("SM", "");
+                        elo.integracao = Enum.EnumIntegracao.IFOOD;
+                    }
+                    else if (elo.eloIntegracao.Contains("SF"))
+                    {
+                        elo.eloIntegracao = elo.eloIntegracao.Replace("SF", "");
+                        elo.integracao = Enum.EnumIntegracao.SHOPFY;
+                    }
+                    else if (elo.eloIntegracao.Contains("IF"))
+                    {
+                        elo.eloIntegracao = elo.eloIntegracao.Replace("IF", "");
+                        elo.integracao = Enum.EnumIntegracao.IFOOD;
+                    }
+                    else if (elo.eloIntegracao.Contains("VP"))
+                    {
+                        elo.eloIntegracao = elo.eloIntegracao.Replace("VP", "");
+                        elo.integracao = Enum.EnumIntegracao.VIPCOMERCE;
+                    }
+
+                    if (elo.integracao != 0 && elo.integracao != null)
+                    {
+                        string query = "INSERT INTO vinculo_integracao (IDVinculo, IDTipoVinculo, IDIntegracao, ExternalID) VALUES (@IDVinculo, @IDTipoVinculo, @IDIntegracao, @ExternalID)";
+                        Hashtable input = new Hashtable();
+                        input.Add("IDVinculo", elo.Id);
+                        input.Add("IDTipoVinculo", elo.vinculoIntegracao);
+                        input.Add("IDIntegracao", elo.integracao);
+                        input.Add("ExternalID", elo.eloIntegracao);
+                        CrudUtils.ExecuteQuery(iConn, input, query);
+                    }
                 }
             }
         }
