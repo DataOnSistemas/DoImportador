@@ -185,8 +185,6 @@ namespace DoImportador.Services
                         Id = int.Parse(d[id].ToString()),
                         vinculoIntegracao = enumVinculoIntegracao
                     };
-                    var teste = int.Parse(d[id].ToString());
-
                     if (elo.eloIntegracao.Contains("TR"))
                     {
                         elo.eloIntegracao = elo.eloIntegracao.Replace("TR", "");
